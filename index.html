@@ -71,6 +71,7 @@ html,body{
 const heartBtnContainer = document.getElementById("heartBtn");
 let introScene, introCamera, introRenderer, introHeart, introAnimationId;
 
+// ==== INTRO HEART ====
 function initIntroHeart(){
     introScene = new THREE.Scene();
     introCamera = new THREE.PerspectiveCamera(75, heartBtnContainer.clientWidth/heartBtnContainer.clientHeight, 0.1, 1000);
@@ -119,6 +120,7 @@ function animateIntroHeart(){
 }
 initIntroHeart();
 
+// ==== CLICK TO START ====
 document.getElementById("heartBtn").addEventListener("click",()=>{
     document.getElementById("loadingBar").style.opacity="1";
     loadAnim();
@@ -155,11 +157,12 @@ function explodeFlash(){
     },200);
 }
 
+// ==== GALAXY ====
 let scene,camera,renderer,controls;
 let orbitObjects=[];
 const textList=[
 "Em yêu anh rất nhiều!","Anh làm vợ em nhé!","Nhớ anh rất nhìu","17/08/2002",
-"E.r.A with Love","Điều tuyệt vời nhất","Tri kỷ","𓇼","𓆝", "𓆡","⋆","˚"
+"E.r.A with Love","Điều tuyệt vời nhất","Tri kỷ","𓇼","𓆝","⋆","˚"
 ];
 const images=[
 "assets/image1.jpg","assets/image2.jpg","assets/image3.jpg",
@@ -167,7 +170,6 @@ const images=[
 "assets/image7.jpg","assets/image8.jpg","assets/image9.jpg",
 "assets/image10.jpg","assets/image11.jpg","assets/image12.jpg"
 ];
-
 let loadedTextures = [];
 
 function preloadImages(callback){
@@ -191,8 +193,9 @@ function initGalaxy(){
     camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
     camera.position.set(0, 0, 0.1);
 
-    renderer = new THREE.WebGLRenderer({antialias:true});
+    renderer = new THREE.WebGLRenderer({antialias:false, alpha:true});
     renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     container.appendChild(renderer.domElement);
 
     controls = new THREE.OrbitControls(camera, renderer.domElement);
@@ -204,16 +207,15 @@ function initGalaxy(){
 
     addStars();
 
-
+    // Tạo 230 object: 30 ảnh và 200 text
     for(let i=0;i<30;i++) newOrbitObject("image");
     for(let i=0;i<200;i++) newOrbitObject("text");
-
 
     animate();
 }
 
 function addStars(){
-    const starCount = 10000; 
+    const starCount = 5000; 
     const positions = [];
     const colors = [];
 
@@ -250,16 +252,16 @@ function newOrbitObject(forceType=null){
         type="text";
         let txt = textList[(Math.random() * textList.length) | 0];
         let canvas = document.createElement("canvas");
-        canvas.width = 3072; canvas.height = 256; 
+        canvas.width = 1024; canvas.height = 128; // giảm độ phân giải
         let ctx = canvas.getContext("2d");
 
-        ctx.font = "bold 90px Arial";
+        ctx.font = "bold 40px Arial";
         ctx.fillStyle = "#ffcfff";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         ctx.shadowColor = "#ff69ff";
-        ctx.shadowBlur = 25;
-        ctx.fillText(txt, canvas.width/2, canvas.height/2 + 8);
+        ctx.shadowBlur = 15;
+        ctx.fillText(txt, canvas.width/2, canvas.height/2);
 
         let tex = new THREE.CanvasTexture(canvas);
         let geo = new THREE.PlaneGeometry(18, 3);
