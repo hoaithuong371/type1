@@ -4,14 +4,12 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>3D Love Galaxy</title>
-
 <style>
 html,body{
     margin:0;height:100%;
     background:#000;overflow:hidden;
     font-family:Arial, sans-serif;
 }
-
 #intro{
     position:fixed;top:0;left:0;width:100%;height:100%;
     background:url('assets/background.jpg') no-repeat center center/cover;
@@ -19,13 +17,11 @@ html,body{
     align-items:center;justify-content:center;
     z-index:10;
 }
-
 #heartBtn{
     width:200px;height:200px;
     cursor:pointer;
     margin-bottom:20px;
 }
-
 #loadingBar{
     width:50%;
     height:20px;
@@ -35,7 +31,6 @@ html,body{
     opacity:0;
     box-shadow:0 2px 6px rgba(255, 115, 185, 0.5);
 }
-
 #loadingFill{
     width:0%;
     height:100%;
@@ -43,12 +38,10 @@ html,body{
     box-shadow:0 0 12px #ff95ca, 0 0 20px #FF1493;
     border-radius:10px;
 }
-
 #flash{
     position:fixed;top:0;left:0;width:100%;height:100%;
     background:white;opacity:0;pointer-events:none;transition:opacity .6s ease-out;
 }
-
 #container{width:100%;height:100vh;position:absolute;top:0;left:0;display:none;}
 </style>
 </head>
@@ -118,10 +111,19 @@ function animateIntroHeart(){
     introHeart.rotation.y += 0.02;
     introRenderer.render(introScene,introCamera);
 }
+
 initIntroHeart();
 
 // ==== CLICK TO START ====
+const bgMusic = document.getElementById("bgMusic");
+
 document.getElementById("heartBtn").addEventListener("click",()=>{
+    // Trigger play once để mobile cho phép
+    bgMusic.play().then(()=>{
+        bgMusic.pause(); // tạm dừng
+        bgMusic.currentTime = 0; // reset
+    }).catch(e => console.log("Music play failed:", e));
+
     document.getElementById("loadingBar").style.opacity="1";
     loadAnim();
 });
@@ -148,12 +150,8 @@ function explodeFlash(){
         document.getElementById("container").style.display="block";
         preloadImages(initGalaxy);
 
-        const bgMusic = document.getElementById("bgMusic");
-        if(bgMusic.readyState >= 4){ 
-            bgMusic.play().catch(e=>console.log(e));
-        } else {
-            bgMusic.addEventListener("canplaythrough", ()=>bgMusic.play(), {once:true});
-        }
+        // Bắt đầu nhạc sau khi galaxy hiển thị
+        bgMusic.play().catch(e => console.log(e));
     },200);
 }
 
@@ -207,7 +205,6 @@ function initGalaxy(){
 
     addStars();
 
-    // Tạo 230 object: 30 ảnh và 200 text
     for(let i=0;i<30;i++) newOrbitObject("image");
     for(let i=0;i<200;i++) newOrbitObject("text");
 
@@ -252,7 +249,7 @@ function newOrbitObject(forceType=null){
         type="text";
         let txt = textList[(Math.random() * textList.length) | 0];
         let canvas = document.createElement("canvas");
-        canvas.width = 1024; canvas.height = 128; // giảm độ phân giải
+        canvas.width = 1024; canvas.height = 128;
         let ctx = canvas.getContext("2d");
 
         ctx.font = "bold 40px Arial";
